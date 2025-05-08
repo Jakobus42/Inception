@@ -1,7 +1,7 @@
 version: 2
 updates:
   - package-ecosystem: "docker"
-    directory: "/"
+    directory: "/srcs/requirements/nginx"
     schedule:
       interval: "weekly"
     ignore:
