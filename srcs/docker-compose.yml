@@ -2,16 +2,20 @@ services:
   nginx:
     build: ./requirements/nginx
     ports:
-      - 443:443
+      - ${NGINX_PORT:-443}:${NGINX_PORT:-443}
     volumes:
       - wordpress:/usr/share/nginx/html:ro
     depends_on:
       - wordpress
+    env_file: "./.env"
     develop:
       watch:
         - action: sync+restart
-          path: ./requirements/nginx/conf/nginx.conf
-          target: /etc/nginx/nginx.conf
+          path: ./requirements/nginx/conf/
+          target: /etc/nginx/templates/
+        - action: sync+restart
+          path: ./requirements/nginx/tools
+          target: /tools
         - action: rebuild
           path: ./requirements/nginx/Dockerfile
   wordpress:

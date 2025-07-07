@@ -1,7 +1,10 @@
 FROM alpine:3.21.3
 
-RUN apk add --no-cache nginx
+RUN apk add --no-cache \
+    nginx \
+    envsubst
 
-COPY conf/nginx.conf /etc/nginx/nginx.conf
+COPY ./conf/ /etc/nginx/templates/
+COPY ./tools/ /tools
 
-ENTRYPOINT [ "nginx", "-g", "daemon off;" ]
+ENTRYPOINT [ "/tools/entrypoint.sh" ]

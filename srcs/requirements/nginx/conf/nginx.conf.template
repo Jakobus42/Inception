@@ -5,7 +5,8 @@ http {
     error_log /dev/stderr; # tmp
 
     server {
-        listen 443;
+        listen ${NGINX_PORT};
+        server_name ${NGINX_HOST};
 
         location / {
             return 200 "foo";
