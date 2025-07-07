@@ -12,6 +12,8 @@ services:
         - action: sync+restart
           path: ./requirements/nginx/conf/nginx.conf
           target: /etc/nginx/nginx.conf
+        - action: rebuild
+          path: ./requirements/nginx/Dockerfile
   wordpress:
     image: wordpress:latest
     ports:
