@@ -1,0 +1,30 @@
+services:
+  nginx:
+    build: ./requirements/nginx
+    ports:
+      - 443:443
+    volumes:
+      - wordpress:/usr/share/nginx/html:ro
+    depends_on:
+      - wordpress
+    develop:
+      watch:
+        - action: sync+restart
+          path: ./requirements/nginx/conf/nginx.conf
+          target: /etc/nginx/nginx.conf
+  wordpress:
+    image: wordpress:latest
+    ports:
+      - 9000
+    volumes:
+      - wordpress:/var/www/html
+    depends_on:
+      - mariadb
+  mariadb:
+    image: mariadb:latest
+    ports:
+      - 3306
+    environment:
+      MARIADB_RANDOM_ROOT_PASSWORD: "true" # TODO: tmp
+volumes:
+  wordpress:
