@@ -65,6 +65,9 @@ jobs:
 
   docker-compose-check:
     name: Validate docker-compose.yml
+    env:
+      SSL_CRT_FILE: non-exist
+      SSL_KEY_FILE: non-exist
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4.2.2
