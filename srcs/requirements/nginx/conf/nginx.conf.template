@@ -1,15 +1,30 @@
+worker_processes auto;
+
 events {}
 
 http {
-    access_log /dev/stdout; # tmp
-    error_log /dev/stderr; # tmp
+    access_log /dev/stdout;
+    error_log /dev/stderr;
 
     server {
-        listen ${NGINX_PORT};
+        listen ${NGINX_PORT} ssl;
+        listen [::]:${NGINX_PORT} ssl;
+
         server_name ${NGINX_HOST};
 
+        root /var/www/html;
+        index index.php;
+
+        ssl_certificate /run/secrets/selfsigned.crt;
+        ssl_certificate_key /run/secrets/selfsigned.key;
+
         location / {
-            return 200 "foo";
+            try_files $uri $uri/ /index.php?$args;
+        }
+
+        location ~ \.php$ {
+            include fastcgi.conf;
+            fastcgi_pass wordpress:9000;
         }
     }
 }
