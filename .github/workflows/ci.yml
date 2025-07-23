@@ -26,7 +26,7 @@ jobs:
           dockerfiles=$(find . -name Dockerfile)
           entries=""
           for file in $dockerfiles; do
-            image=basename $(dirname $file)
+            image= $(basename $(dirname $file))
             entries="${entries}{\"dockerfile\":\"$file\",\"image\":\"$image\",\"os\":\"ubuntu-latest\"},"
           done
           entries="[${entries%,}]"
