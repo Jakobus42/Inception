@@ -9,6 +9,7 @@ on:
     paths:
       - "**/Dockerfile"
       - "srcs/docker-compose.yml"
+  workflow_dispatch:
 
 jobs:
   generate-matrix:
@@ -50,7 +51,7 @@ jobs:
         run: docker build -f "${{ matrix.dockerfile }}" -t "${{ matrix.image }}:ci" .
 
       - name: Run Trivy scan on ${{ matrix.image }}
-        uses: aquasecurity/trivy-action@0.32.0
+        uses: aquasecurity/trivy-action@v0.32.0
         with:
           image-ref: "${{ matrix.image }}:ci"
           format: "table"
@@ -58,7 +59,7 @@ jobs:
           exit-code: "1"
 
       - name: Run Dockle scan on ${{ matrix.image }}
-        uses: goodwithtech/dockle-action@0.4.15
+        uses: goodwithtech/dockle-action@v0.4.15
         with:
           image: "${{ matrix.image }}:ci"
 
