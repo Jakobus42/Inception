@@ -4,7 +4,7 @@ services:
   nginx:
     build: ./requirements/nginx
     ports:
-      - ${NGINX_PORT:-443}:${NGINX_PORT:-443}
+      - ${NGINX_PORT:-443}:443
     volumes:
       - wordpress:/var/www/html:ro
     depends_on:
