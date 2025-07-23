@@ -48,7 +48,7 @@ jobs:
           dockerfile: ${{ matrix.dockerfile }}
 
       - name: Build Docker image
-        run: docker build -f "${{ matrix.dockerfile }}" -t "${{ matrix.image }}:ci" .
+        run: docker build -f "${{ matrix.dockerfile }}" -t "${{ matrix.image }}:ci" "$(dirname "${{ matrix.dockerfile }}")"
 
       - name: Run Trivy scan on ${{ matrix.image }}
         uses: aquasecurity/trivy-action@0.31.0
