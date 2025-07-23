@@ -1,0 +1,72 @@
+name: Docker CI
+
+on:
+  push:
+    paths:
+      - "**/Dockerfile"
+      - "srcs/docker-compose.yml"
+  pull_request:
+    paths:
+      - "**/Dockerfile"
+      - "srcs/docker-compose.yml"
+
+jobs:
+  generate-matrix:
+    name: Generate matrix for docker lints
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v4.2.2
+
+      - name: Set matrix for docker lints/scan
+        id: set-matrix
+        run: |
+          dockerfiles=$(find . -name Dockerfile)
+          entries=""
+          for file in $dockerfiles; do
+            image=$(dirname "$file")
+            entries="${entries}{\"dockerfile\":\"$file\",\"image\":\"$image\",\"os\":\"ubuntu-latest\"},"
+          done
+          entries="[${entries%,}]"
+          echo "matrix=${entries}" >> "$GITHUB_OUTPUT"
+
+  docker-check:
+    name: Lint/Scan Dockerfiles
+    needs: generate-matrix
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix: ${{ fromJson(needs.generate-matrix.outputs.matrix) }}
+
+    steps:
+      - uses: actions/checkout@v4.2.2
+
+      - name: Run hadolint on ${{ matrix.dockerfile }}
+        uses: hadolint/hadolint-action@v3.1.0
+        with:
+          dockerfile: ${{ matrix.dockerfile }}
+
+      - name: Build Docker image
+        run: docker build -f "${{ matrix.dockerfile }}" -t "${{ matrix.image }}:ci" .
+
+      - name: Run Trivy scan on ${{ matrix.image }}
+        uses: aquasecurity/trivy-action@0.32.0
+        with:
+          image-ref: "${{ matrix.image }}:ci"
+          format: "table"
+          severity: "MEDIUM,HIGH,CRITICAL"
+          exit-code: "1"
+
+      - name: Run Dockle scan on ${{ matrix.image }}
+        uses: goodwithtech/dockle-action@0.4.15
+        with:
+          image: "${{ matrix.image }}:ci"
+
+  docker-compose-check:
+    name: Validate docker-compose.yml
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4.2.2
+      - name: Validate docker-compose.yml
+        run: |
+          docker-compose -f srcs/docker-compose.yml config
