@@ -1,13 +1,15 @@
 # TODO: make each services order similar
 services:
   nginx:
+    container_name: nginx
     build: ./requirements/nginx
     ports:
       - ${NGINX_PORT:-443}:443
     volumes:
       - wordpress:/var/www/html:ro
-    depends_on:
+    depends_on: # todo: wait for healthy
       - wordpress
+    restart: unless-stopped
     env_file: ./.env
     secrets:
       - selfsigned.crt
@@ -23,19 +25,20 @@ services:
         - action: rebuild
           path: ./requirements/nginx/Dockerfile
   wordpress:
-    image: wordpress:php8.2-fpm
+    container_name: wordpress
+    build: ./requirements/wordpress
     ports:
       - 9000
     volumes:
       - wordpress:/var/www/html
-    depends_on:
-      - mariadb
-  mariadb:
-    image: mariadb:latest
-    ports:
-      - 3306
-    environment:
-      MARIADB_RANDOM_ROOT_PASSWORD: true # TODO: tmp
+    restart: unless-stopped
+    develop:
+      watch:
+        - action: rebuild
+          path: ./requirements/wordpress/Dockerfile
+        - action: sync+restart
+          path: ./requirements/wordpress/conf/
+          target: /etc/php84/php-fpm.d/
 volumes:
   wordpress:
 secrets:
