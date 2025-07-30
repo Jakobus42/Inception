@@ -1,5 +1,4 @@
 # TODO: make each services order similar
-
 services:
   nginx:
     build: ./requirements/nginx
@@ -37,10 +36,8 @@ services:
       - 3306
     environment:
       MARIADB_RANDOM_ROOT_PASSWORD: true # TODO: tmp
-
 volumes:
   wordpress:
-
 secrets:
   selfsigned.crt:
     file: ${SSL_CRT_FILE:?error}
