@@ -19,6 +19,10 @@ http {
         ssl_certificate /run/secrets/selfsigned.crt;
         ssl_certificate_key /run/secrets/selfsigned.key;
 
+        location /health {
+          return 200 'OK';
+        }
+
         location / {
             try_files $uri $uri/ /index.php?$args;
         }
