@@ -39,6 +39,16 @@ services:
         - action: sync+restart
           path: ./requirements/wordpress/conf/
           target: /etc/php84/php-fpm.d/
+  mariadb:
+    container_name: mariadb
+    build: ./requirements/mariadb
+    ports:
+      - 3306
+    restart: unless-stopped
+    develop:
+      watch:
+        - action: rebuild
+          path: ./requirements/mariadb/Dockerfile
 volumes:
   wordpress:
 secrets:
