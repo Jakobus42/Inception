@@ -1,0 +1,4 @@
+# maybe I dont need this at all because I only need port so far?
+[mariadbd]
+port = 3306
+bind-address = 0.0.0.0
