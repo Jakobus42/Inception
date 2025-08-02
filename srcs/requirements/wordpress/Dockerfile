@@ -1,5 +1,7 @@
 FROM alpine:3.21.3
 
+# create a user
+
 RUN set -x && \
     apk add --no-cache \
     php84-fpm=8.4.5-r0 \
@@ -10,10 +12,11 @@ RUN set -x && \
     -C /var/www/html --strip-components=1 && \
     rm wordpress-6.8.2.tar.gz
 
-COPY conf/ /etc/php84/php-fpm.d/
+COPY conf/ /etc/php84/
 
 EXPOSE 9000
 
 HEALTHCHECK CMD nc -z 0.0.0.0 9000 
 
-CMD ["php-fpm84", "-F"]
+ENTRYPOINT ["php-fpm84", "-F"]
+

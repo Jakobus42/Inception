@@ -11,7 +11,7 @@ COPY ./tools/ /tools
 EXPOSE 443
 
 HEALTHCHECK CMD wget --spider --no-check-certificate \
-                    https://localhost/health || exit 1
+                    https://localhost/health
 
 ENTRYPOINT [ "/tools/entrypoint.sh" ]
 CMD ["nginx", "-g", "daemon off;"]
