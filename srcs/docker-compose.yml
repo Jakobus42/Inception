@@ -1,4 +1,5 @@
 # TODO: make each services order similar
+name: inception
 services:
   nginx:
     container_name: nginx
@@ -7,8 +8,10 @@ services:
       - ${NGINX_PORT:-443}:443
     volumes:
       - wordpress:/var/www/html:ro
-    depends_on: # todo: wait for healthy
-      - wordpress
+    depends_on:
+      wordpress:
+        condition: service_healthy
+        restart: true
     restart: unless-stopped
     env_file: ./.env
     secrets:
@@ -17,8 +20,8 @@ services:
     develop:
       watch:
         - action: sync+restart
-          path: ./requirements/nginx/conf/
-          target: /etc/nginx/templates/
+          path: ./requirements/nginx/conf
+          target: /etc/nginx/templates
         - action: sync+restart
           path: ./requirements/nginx/tools
           target: /tools
@@ -31,26 +34,34 @@ services:
       - 9000
     volumes:
       - wordpress:/var/www/html
+    depends_on:
+      - mariadb
     restart: unless-stopped
     develop:
       watch:
         - action: rebuild
           path: ./requirements/wordpress/Dockerfile
         - action: sync+restart
-          path: ./requirements/wordpress/conf/
-          target: /etc/php84/php-fpm.d/
+          path: ./requirements/wordpress/conf
+          target: /etc/php84
   mariadb:
     container_name: mariadb
     build: ./requirements/mariadb
     ports:
       - 3306
+    volumes:
+      - mariadb:/var/lib/mysql
     restart: unless-stopped
     develop:
       watch:
         - action: rebuild
           path: ./requirements/mariadb/Dockerfile
+        - action: sync+restart
+          path: ./requirements/mariadb/conf
+          target: /etc/my.cnf.d
 volumes:
   wordpress:
+  mariadb:
 secrets:
   selfsigned.crt:
     file: ${SSL_CRT_FILE:?error}
