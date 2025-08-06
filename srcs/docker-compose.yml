@@ -13,7 +13,8 @@ services:
         condition: service_healthy
         restart: true
     restart: unless-stopped
-    env_file: ./.env
+    environment:
+      NGINX_HOST: ${NGINX_HOST:-jsadjina.42.fr} # TODO: do I need this?
     secrets:
       - selfsigned.crt
       - selfsigned.key
@@ -35,7 +36,9 @@ services:
     volumes:
       - wordpress:/var/www/html
     depends_on:
-      - mariadb
+      mariadb:
+        condition: service_healthy
+        restart: true
     restart: unless-stopped
     develop:
       watch:
@@ -52,6 +55,11 @@ services:
     volumes:
       - mariadb:/var/lib/mysql
     restart: unless-stopped
+    environment:
+      DB_USER: ${DB_USER:-wpuser}
+      DB_NAME: ${DB_NAME:-wordpress}
+    secrets:
+      - db_password
     develop:
       watch:
         - action: rebuild
@@ -59,11 +67,16 @@ services:
         - action: sync+restart
           path: ./requirements/mariadb/conf
           target: /etc/my.cnf.d
+        - action: sync+restart
+          path: ./requirements/mariadb/tools
+          target: /tools
 volumes:
   wordpress:
   mariadb:
 secrets:
   selfsigned.crt:
-    file: ${SSL_CRT_FILE:?error}
+    file: ${NGINX_SSL_CRT_FILE:?error} # TODO: maybe dont have those FILE_ vars at all and just hardcode?
   selfsigned.key:
-    file: ${SSL_KEY_FILE:?error}
+    file: ${NGINX_SSL_KEY_FILE:?error}
+  db_password:
+    file: ${DB_PASSWORD_FILE:?error}
