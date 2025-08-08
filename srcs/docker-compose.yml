@@ -54,8 +54,7 @@ services:
     environment:
       DB_USER: ${DB_USER:-wpuser}
       DB_NAME: ${DB_NAME:-wordpress}
-    secrets:
-      - db_password
+      DB_PASSWORD: ${DB_PASSWORD:?error}
     develop:
       watch:
         - action: rebuild
@@ -74,5 +73,3 @@ secrets:
     file: ${NGINX_SSL_CRT_FILE:?error}
   selfsigned.key:
     file: ${NGINX_SSL_KEY_FILE:?error}
-  db_password:
-    environment: DB_PASSWORD
