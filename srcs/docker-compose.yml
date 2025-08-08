@@ -5,7 +5,7 @@ services:
     container_name: nginx
     build: ./requirements/nginx
     ports:
-      - 443
+      - 443:443
     volumes:
       - wordpress:/var/www/html:ro
     depends_on:
@@ -14,7 +14,7 @@ services:
         restart: true
     restart: unless-stopped
     environment:
-      NGINX_HOST: ${NGINX_HOST:-jsadjina.42.fr} # TODO: do I need this?
+      NGINX_HOST: ${NGINX_HOST:-jsadjina.42.fr}
     secrets:
       - selfsigned.crt
       - selfsigned.key
@@ -28,6 +28,8 @@ services:
           target: /tools
         - action: rebuild
           path: ./requirements/nginx/Dockerfile
+    networks:
+      - inception
   wordpress:
     container_name: wordpress
     build: ./requirements/wordpress
@@ -45,6 +47,8 @@ services:
         - action: sync+restart
           path: ./requirements/wordpress/conf
           target: /etc/php84
+    networks:
+      - inception
   mariadb:
     container_name: mariadb
     build: ./requirements/mariadb
@@ -65,6 +69,8 @@ services:
         - action: sync+restart
           path: ./requirements/mariadb/tools
           target: /tools
+    networks:
+      - inception
 volumes:
   wordpress:
   mariadb:
@@ -73,3 +79,6 @@ secrets:
     file: ${NGINX_SSL_CRT_FILE:?error}
   selfsigned.key:
     file: ${NGINX_SSL_KEY_FILE:?error}
+networks:
+  inception:
+    name: inception
