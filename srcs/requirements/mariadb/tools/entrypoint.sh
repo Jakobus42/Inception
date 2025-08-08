@@ -1,6 +1,6 @@
 #!/bin/sh
 
-if [ ! -d /var/lib/mysql ]; then
+if [ ! -d /var/lib/mysql/mysql ]; then
   mariadb-install-db --datadir=/var/lib/mysql
 
   DB_PASSWORD=$(cat /run/secrets/db_password)
