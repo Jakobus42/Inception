@@ -5,7 +5,7 @@ services:
     container_name: nginx
     build: ./requirements/nginx
     ports:
-      - ${NGINX_PORT:-443}:443
+      - 443
     volumes:
       - wordpress:/var/www/html:ro
     depends_on:
@@ -31,8 +31,6 @@ services:
   wordpress:
     container_name: wordpress
     build: ./requirements/wordpress
-    ports:
-      - 9000
     volumes:
       - wordpress:/var/www/html
     depends_on:
@@ -50,8 +48,6 @@ services:
   mariadb:
     container_name: mariadb
     build: ./requirements/mariadb
-    ports:
-      - 3306
     volumes:
       - mariadb:/var/lib/mysql
     restart: unless-stopped
@@ -75,8 +71,8 @@ volumes:
   mariadb:
 secrets:
   selfsigned.crt:
-    file: ${NGINX_SSL_CRT_FILE:?error} # TODO: maybe dont have those FILE_ vars at all and just hardcode?
+    file: ${NGINX_SSL_CRT_FILE:?error}
   selfsigned.key:
     file: ${NGINX_SSL_KEY_FILE:?error}
   db_password:
-    file: ${DB_PASSWORD_FILE:?error}
+    environment: DB_PASSWORD
