@@ -40,13 +40,21 @@ services:
         condition: service_healthy
         restart: true
     restart: unless-stopped
+    environment:
+      DB_USER: ${DB_USER:-wpuser}
+      DB_NAME: ${DB_NAME:-wordpress}
+      DB_PASSWORD: ${DB_PASSWORD:?error}
+      DB_HOST: mariadb # TODO: where to define this? do I need in env? 
     develop:
       watch:
         - action: rebuild
           path: ./requirements/wordpress/Dockerfile
         - action: sync+restart
-          path: ./requirements/wordpress/conf
-          target: /etc/php84
+          path: ./requirements/wordpress/conf/
+          target: /etc/php84/
+        - action: sync+restart
+          path: ./requirements/wordpress/tools
+          target: /tools
     networks:
       - inception
   mariadb:
@@ -71,6 +79,8 @@ services:
           target: /tools
     networks:
       - inception
+    ports:
+      - 3306:3306 # TODO: tmp
 volumes:
   wordpress:
   mariadb:
