@@ -2,7 +2,7 @@ DOCKER_COMPOSE_FILE := ./srcs/docker-compose.yml
 
 .PHONY: all
 all: 
-	docker compose -f ${DOCKER_COMPOSE_FILE} up --build
+	docker compose -f ${DOCKER_COMPOSE_FILE} up
 
 .PHONY: dev
 dev:
