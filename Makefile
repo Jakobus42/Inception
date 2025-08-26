@@ -22,6 +22,6 @@ clean:
 .PHONY: fclean
 fclean:
 	docker compose -f ${DOCKER_COMPOSE_FILE} down --rmi all
-	rm -rf ${WORDPRESS_VOLUME}
-	rm -rf ${MARIADB_VOLUME} 
+	sudo rm -rf ${WORDPRESS_VOLUME}
+	sudo rm -rf ${MARIADB_VOLUME} 
 
