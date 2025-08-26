@@ -1,7 +1,5 @@
 FROM alpine:3.21.4
 
-# TODO: create a user
-
 RUN set -x && \
     apk add --no-cache \
     curl=8.12.1-r1 \
