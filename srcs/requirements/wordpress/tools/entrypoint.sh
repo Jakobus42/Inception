@@ -29,7 +29,7 @@ if ! wp core is-installed 2>/dev/null; then
     --user_pass="${WORDPRESS_USER_PASSWORD}" \
     --role="${WORDPRESS_USER_ROLE}"
 
-  wp theme install ${WORDPRESS_THEME} --activate # TODO: set env var
+  wp theme install ${WORDPRESS_THEME} --activate
 fi
 
 unset DB_PASSWORD

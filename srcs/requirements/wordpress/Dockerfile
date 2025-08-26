@@ -1,7 +1,6 @@
 FROM alpine:3.21.4
 
 # TODO: create a user
-# TODO: download pinned version for wp cli and wp
 
 RUN set -x && \
     apk add --no-cache \
