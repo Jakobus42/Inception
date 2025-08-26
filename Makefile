@@ -14,5 +14,5 @@ clean:
 
 .PHONY: fclean
 fclean:
-	docker compose -f ${DOCKER_COMPOSE_FILE} down -v
+	docker compose -f ${DOCKER_COMPOSE_FILE} down -v --rmi all 
 
