@@ -90,7 +90,17 @@ services:
       - inception
 volumes:
   wordpress:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ${WORDPRESS_VOLUME:?error}
   mariadb:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ${MARIADB_VOLUME:?error}
 secrets:
   selfsigned.crt:
     file: ${NGINX_SSL_CRT_FILE:?error}
