@@ -41,10 +41,20 @@ services:
         restart: true
     restart: unless-stopped
     environment:
-      DB_USER: ${DB_USER:-wpuser}
-      DB_NAME: ${DB_NAME:-wordpress}
-      DB_PASSWORD: ${DB_PASSWORD:?error}
-      DB_HOST: mariadb # TODO: where to define this? do I need in env? 
+      WORDPRESS_DB_USER: ${DB_USER:-wpuser}
+      WORDPRESS_DB_NAME: ${DB_NAME:-wordpress}
+      WORDPRESS_DB_PASSWORD: ${DB_PASSWORD:?error}
+      WORDPRESS_DB_HOST: mariadb
+      WORDPRESS_ADMIN_USER_NAME: ${WORDPRESS_ADMIN_USER_NAME:-420chefe69}
+      WORDPRESS_ADMIN_PASSWORD: ${WORDPRESS_ADMIN_PASSWORD:?error}
+      WORDPRESS_ADMIN_EMAIL: ${WORDPRESS_ADMIN_EMAIL:?error}
+      WORDPRESS_USER_NAME: ${WORDPRESS_USER_NAME:-420author69}
+      WORDPRESS_USER_PASSWORD: ${WORDPRESS_USER_PASSWORD:?error}
+      WORDPRESS_USER_EMAIL: ${WORDPRESS_USER_EMAIL:?error}
+      WORDPRESS_USER_ROLE: ${WORDPRESS_USER_ROLE:-author}
+      WORDPRESS_URL: ${NGINX_HOST:-jsadjina.42.fr}
+      WORDPRESS_TITEL: ${WORDPRESS_TITEL:-inception}
+      WORDPRESS_THEME: ${WORDPRESS_THEME:-twentysixteen}
     develop:
       watch:
         - action: rebuild
@@ -80,7 +90,7 @@ services:
     networks:
       - inception
     ports:
-      - 3306:3306 # TODO: tmp
+      - 3306:3306
 volumes:
   wordpress:
   mariadb:
