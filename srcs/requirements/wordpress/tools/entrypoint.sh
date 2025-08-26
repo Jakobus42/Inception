@@ -1,6 +1,6 @@
 #!/bin/sh
 
-set -ex
+set -x
 
 cd /var/www/html
 
