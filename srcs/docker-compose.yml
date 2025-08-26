@@ -1,4 +1,3 @@
-# TODO: make each services order similar
 name: inception
 services:
   nginx:
@@ -8,11 +7,11 @@ services:
       - 443:443
     volumes:
       - wordpress:/var/www/html:ro
+    restart: unless-stopped
     depends_on:
       wordpress:
         condition: service_healthy
         restart: true
-    restart: unless-stopped
     environment:
       NGINX_HOST: ${NGINX_HOST:-jsadjina.42.fr}
     secrets:
@@ -20,14 +19,14 @@ services:
       - selfsigned.key
     develop:
       watch:
+        - action: rebuild
+          path: ./requirements/nginx/Dockerfile
         - action: sync+restart
           path: ./requirements/nginx/conf
           target: /etc/nginx/templates
         - action: sync+restart
           path: ./requirements/nginx/tools
           target: /tools
-        - action: rebuild
-          path: ./requirements/nginx/Dockerfile
     networks:
       - inception
   wordpress:
@@ -35,11 +34,11 @@ services:
     build: ./requirements/wordpress
     volumes:
       - wordpress:/var/www/html
+    restart: unless-stopped
     depends_on:
       mariadb:
         condition: service_healthy
         restart: true
-    restart: unless-stopped
     environment:
       WORDPRESS_DB_USER: ${DB_USER:-wpuser}
       WORDPRESS_DB_NAME: ${DB_NAME:-wordpress}
