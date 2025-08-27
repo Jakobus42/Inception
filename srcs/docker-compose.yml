@@ -13,7 +13,7 @@ services:
         condition: service_healthy
         restart: true
     environment:
-      NGINX_HOST: ${NGINX_HOST:-jsadjina.42.fr}
+      NGINX_HOST: ${NGINX_HOST:?error}
     secrets:
       - selfsigned.crt
       - selfsigned.key
@@ -51,7 +51,7 @@ services:
       WORDPRESS_USER_PASSWORD: ${WORDPRESS_USER_PASSWORD:?error}
       WORDPRESS_USER_EMAIL: ${WORDPRESS_USER_EMAIL:?error}
       WORDPRESS_USER_ROLE: ${WORDPRESS_USER_ROLE:-author}
-      WORDPRESS_URL: ${NGINX_HOST:-jsadjina.42.fr}
+      WORDPRESS_URL: ${NGINX_HOST:?error}
       WORDPRESS_TITEL: ${WORDPRESS_TITEL:-inception}
       WORDPRESS_THEME: ${WORDPRESS_THEME:-twentysixteen}
     develop:
