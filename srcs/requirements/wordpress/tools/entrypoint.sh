@@ -32,6 +32,6 @@ if ! wp core is-installed 2>/dev/null; then
   wp theme install ${WORDPRESS_THEME} --activate
 fi
 
-unset DB_PASSWORD
+unset WORDPRESS_DB_PASSWORD
 
 exec "$@"
